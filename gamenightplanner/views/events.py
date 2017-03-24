@@ -1,0 +1,118 @@
+# Copyright (c) 2017, Tomi Leppänen
+# This file is part of Game Night Planner
+#
+# Game Night Planner is free software: you can redistribute it and/or
+# modify it under the terms of the Lesser GNU General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# Game Night Planner is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the Lesser
+# GNU General Public License for more details.
+#
+# You should have received a copy of the Lesser GNU General Public
+# License along with Game Night Planner.  If not, see
+# <http://www.gnu.org/licenses/>.
+
+from . import AjaxableViewMixin, CreateWithAddedInfoMixin
+from datetime import datetime, time
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import PermissionDenied
+from django.forms import ModelForm, ValidationError, inlineformset_factory
+from django.shortcuts import get_object_or_404, redirect
+from django.utils.timezone import now
+from django.utils.translation import ugettext as _
+from django.views.generic import DetailView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from isoweek import Week
+from ..models import Event
+
+class CreateEventForm(ModelForm):
+    class Meta:
+        model = Event
+        fields = ['date', 'length', 'host']
+
+    def clean_date(self):
+        date = self.cleaned_data['date']
+        if date < now():
+            raise ValidationError(_("date can not be in the past"))
+        return date
+
+class CreateEventView(LoginRequiredMixin, AjaxableViewMixin,
+                      CreateWithAddedInfoMixin, CreateView):
+    form_class = CreateEventForm
+    template_name = 'gamenightplanner/event/add.html'
+
+    def dispatch(self, request, year=None, month=None, day=None,
+                 week=None, hour=None, minute=None, *args, **kwargs):
+        self.date = None
+        self.previous = None
+        if year is not None:
+            year = int(year)
+            if month is not None:
+                month = int(month)
+                if day is not None:
+                    day = int(day)
+                    if hour is not None:
+                        hour, minute = int(hour), int(minute)
+                        self.date = datetime(year, month, day, hour, minute)
+                    else:
+                        self.date = datetime(year, month, day, 18, 0)
+                    self.previous = ('calendar:day', { 'year': year,
+                                                       'month': month,
+                                                       'day': day })
+                else:
+                    self.date = datetime(year, month, 1, 18, 0)
+                    self.previous = ('calendar:month', { 'year': year,
+                                                         'month': month })
+            elif week is not None:
+                self.date = datetime.combine(Week(year, int(week)).monday(),
+                                             time(18, 0))
+                self.previous = ('calendar:week', { 'year': year,
+                                                    'week': week })
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        if request.POST.get('cancel') is not None:
+            if self.previous:
+                return redirect(self.previous[0], **self.previous[1])
+            else:
+                return redirect('calendar:index')
+        return super().post(request, *args, **kwargs)
+
+    def get_initial(self):
+        initial = super().get_initial()
+        if self.date is not None:
+            initial['date'] = self.date
+        initial['host'] = self.request.user
+        return initial
+
+class EventDetailView(LoginRequiredMixin, AjaxableViewMixin, DetailView):
+    model = Event
+    template_name = 'gamenightplanner/event/event.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['participating'] = self.get_object().participants.filter(
+                pk=self.request.user.pk).exists()
+        return context
+
+    @staticmethod
+    @login_required
+    def add_participation_view(request, pk):
+        event = get_object_or_404(Event, pk=pk)
+        if event.archived:
+            raise PermissionDenied
+        event.participants.add(request.user)
+        return redirect('events:show', pk=pk)
+
+    @staticmethod
+    @login_required
+    def remove_participation_view(request, pk):
+        event = get_object_or_404(Event, pk=pk)
+        if event.archived:
+            raise PermissionDenied
+        event.participants.remove(request.user)
+        return redirect('events:show', pk=pk)

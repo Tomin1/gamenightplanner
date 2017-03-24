@@ -1,0 +1,33 @@
+{% load i18n %}{% comment %}
+Copyright (c) 2017, Tomi Leppänen
+This file is part of Game Night Planner
+
+Game Night Planner is free software: you can redistribute it and/or
+modify it under the terms of the Lesser GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Game Night Planner is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the Lesser
+GNU General Public License for more details.
+
+You should have received a copy of the Lesser GNU General Public
+License along with Game Night Planner.  If not, see
+<http://www.gnu.org/licenses/>.
+{% endcomment %}<h1>{% blocktrans with date=event.date %}Event on {{ date }}.{% endblocktrans %}</h1>
+<p class="ends_at">{% blocktrans with ends=event.ends %}Event ends at {{ ends }}.{% endblocktrans %}</p>
+<p class="hosted_by">{% blocktrans with host=event.host %}Hosted by {{ host }}.{% endblocktrans %}</p>
+{% if event.participants.all %}<p>{% trans "Participants:" %}</p>
+<ul class="participants">{% for participant in event.participants.all %}
+    <li>{{ participant }}</li>{% endfor %}
+</ul>{% else %}<p>{% trans "No participants." %}</p>{% endif %}
+{% if not event.archived %}
+<p>{% if not participating %}<a href="{% url 'events:participate' event.pk %}"><button>{% trans "Participate" %}</button></a>{% else %}
+<a href="{% url 'events:leave' event.pk %}"><button>{% trans "Remove me" %}</button></a>{% endif %}</p>
+{% endif %}
+{% if not ajax %}<p>{% with date=event.date week=event.week %}
+<a href="{% url 'calendar:day' date.year date.month date.day %}">{% trans "Go back to day view" %}</a><br />
+<a href="{% url 'calendar:week' date.year week %}">{% trans "Go back to week view" %}</a><br />
+<a href="{% url 'calendar:month' date.year date.month %}">{% trans "Go back to month view" %}</a><br />
+{% endwith %}</p>{% endif %}

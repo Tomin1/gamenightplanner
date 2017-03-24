@@ -1,0 +1,53 @@
+/*
+ * Copyright (c) 2017, Tomi Leppänen
+ * This file is part of Game Night Planner
+ *
+ * Game Night Planner is free software: you can redistribute it and/or
+ * modify it under the terms of the Lesser GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * Game Night Planner is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the Lesser
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the Lesser GNU General Public
+ * License along with Game Night Planner.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
+/* Site structure */
+
+/* Site styling */
+
+/* Calendar structure */
+table.calendar.month_view { border-collapse: collapse; }
+table.calendar.month_view th, table.calendar.month_view td {
+    border: 1px solid black;
+}
+table.calendar.month_view td.day {
+    height: 3em;
+    width: 3em;
+}
+.calendar .has_event { background-color: lightgreen; }
+table.calendar td.day.today span { text-decoration: underline; }
+table.calendar td a, .calendar th a {
+    display: block;
+    height: 100%;
+    width: 100%;
+}
+table.calendar td a, table.calendar th a {
+    color: black;
+    display: table;
+    text-decoration: none;
+}
+table.calendar td a span, table.calendar th a span {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+}
+
+table.calendar td a:hover, table.calendar th a:hover { color: darkgray; }
+
+/* Calendar styling */

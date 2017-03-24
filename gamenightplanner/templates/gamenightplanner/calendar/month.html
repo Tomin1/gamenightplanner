@@ -1,0 +1,32 @@
+{% load i18n %}{% comment %}
+Copyright (c) 2017, Tomi Leppänen
+This file is part of Game Night Planner
+
+Game Night Planner is free software: you can redistribute it and/or
+modify it under the terms of the Lesser GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Game Night Planner is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the Lesser
+GNU General Public License for more details.
+
+You should have received a copy of the Lesser GNU General Public
+License along with Game Night Planner.  If not, see
+<http://www.gnu.org/licenses/>.
+{% endcomment %}<table class="calendar month_view">
+    <caption><a href="{{ prev_url }}">&lt;&lt;</a>&nbsp;
+        <span class="month_name">{% blocktrans %}{{ monthname }}, {{ year }}{% endblocktrans %}</span>
+        &nbsp;<a href="{{ next_url }}">&gt;&gt;</a>
+    </caption>
+    <tr><th></th>{% for name in daysofweekshort %}
+        <th class="day_of_week">{{ name }}</th>{% endfor %}
+    </tr>
+{% for week_number, week in calendar %}
+    <tr><th class="week_number"><a href="{% url 'calendar:week' year week_number %}"><span class="centered">{{ week_number }}</span></a></th>{% for day, events, classes in week %}
+        <td class="day{% if events %} has_event{% endif %}{% for class in classes %} {{ class }}{% endfor %}">
+            <a href="{% url 'calendar:day' day.year day.month day.day %}"><span>{{ day.day }}</span></a>
+        </td>{% endfor %}
+    </tr>
+{% endfor %}</table>
