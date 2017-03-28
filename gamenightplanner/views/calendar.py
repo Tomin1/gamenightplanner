@@ -27,7 +27,7 @@ from django.views.generic.list import ListView
 from isoweek import Week
 from ..models import Event
 
-class CalendarMixin:
+class CalendarMixin(LoginRequiredMixin):
     DAYSOFWEEK = (_('Monday'), _('Tuesday'), _('Wednesday'),
                   _('Thursday'), _('Friday'), _('Saturday'),
                   _('Sunday'))
