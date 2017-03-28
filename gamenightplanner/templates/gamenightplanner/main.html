@@ -1,4 +1,4 @@
-{% extends 'gamenightplanner/base.html' %}{% comment %}
+{% extends 'gamenightplanner/base.html' %}{% load i18n %}{% comment %}
 Copyright (c) 2017, Tomi Leppänen
 This file is part of Game Night Planner
 
@@ -17,5 +17,9 @@ License along with Game Night Planner.  If not, see
 <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% block content %}
+<p>{% if not user.is_authenticated %}
+    <a href="{% url 'login' %}">{% trans "Login" %}</a>{% else %}
+    <a href="{% url 'logout' %}">{% trans "Logout" %}</a>{% endif %}
+</p>
 <p><a data-action="replace" data-target="main_content" href="{% url 'calendar:index' %}">Calendar</a></p>
 {% endblock %}
