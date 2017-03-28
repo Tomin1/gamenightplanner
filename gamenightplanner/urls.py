@@ -17,11 +17,12 @@
 
 from django.conf.urls import url, include
 from django.contrib import admin
+from django.contrib.auth.views import logout
 from .views import *
 
 
 urlpatterns = [
-    url(r'^$', MainView.as_view()),
+    url(r'^$', MainView.as_view(), name='main'),
     url(r'^calendar/', include([
         url(r'^$', calendar.CalendarView.as_view(), name='index'),
         url(r'^(?P<year>\d+)/(?P<month>\d+)/$',
@@ -49,4 +50,7 @@ urlpatterns = [
             events.EventDetailView.remove_participation_view, name='leave'),
     ], namespace='events')),
     url(r'^admin/', admin.site.urls),
+    url(r'^login/$', LoginOptionsView.as_view(), name='login'),
+    url(r'^logout/$', logout, name='logout'),
+    url(r'^auth/', include('social_django.urls', namespace='social')),
 ]
