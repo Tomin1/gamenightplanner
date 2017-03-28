@@ -15,6 +15,6 @@
 # License along with Game Night Planner.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-"""Requires: Django >= 1.10, pytz, isoweek"""
+"""Requires: Django >= 1.10, pytz, isoweek, social-auth-app-django"""
 
 default_app_config = 'gamenightplanner.apps.GameNightPlannerConfig'
