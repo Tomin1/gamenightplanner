@@ -15,7 +15,8 @@ GNU General Public License for more details.
 You should have received a copy of the Lesser GNU General Public
 License along with Game Night Planner.  If not, see
 <http://www.gnu.org/licenses/>.
-{% endcomment %}<table class="calendar month_view">
+{% endcomment %}<p><a href="{% url 'main' %}">Go back to main view</a></p>
+<table class="calendar month_view">
     <caption><a href="{{ prev_url }}">&lt;&lt;</a>&nbsp;
         <span class="month_name">{% blocktrans %}{{ monthname }}, {{ year }}{% endblocktrans %}</span>
         &nbsp;<a href="{{ next_url }}">&gt;&gt;</a>
