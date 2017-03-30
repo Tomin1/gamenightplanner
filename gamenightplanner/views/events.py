@@ -15,7 +15,7 @@
 # License along with Game Night Planner.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-from . import AjaxableViewMixin, CreateWithAddedInfoMixin
+from . import AjaxableViewMixin, CreateWithAddedInfoMixin, CreateViewWithInlines
 from datetime import datetime, time
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -27,7 +27,7 @@ from django.utils.translation import ugettext as _
 from django.views.generic import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from isoweek import Week
-from ..models import Event
+from ..models import Event, Game
 
 class CreateEventForm(ModelForm):
     class Meta:
@@ -40,9 +40,13 @@ class CreateEventForm(ModelForm):
             raise ValidationError(_("date can not be in the past"))
         return date
 
+GameInlineFormSet = inlineformset_factory(Event, Game, extra=1,
+                                          fields=('name',))
+
 class CreateEventView(LoginRequiredMixin, AjaxableViewMixin,
-                      CreateWithAddedInfoMixin, CreateView):
+                      CreateWithAddedInfoMixin, CreateViewWithInlines):
     form_class = CreateEventForm
+    inlines = {'game_formset': GameInlineFormSet}
     template_name = 'gamenightplanner/event/add.html'
 
     def dispatch(self, request, year=None, month=None, day=None,
@@ -74,6 +78,13 @@ class CreateEventView(LoginRequiredMixin, AjaxableViewMixin,
                                                     'week': week })
         return super().dispatch(request, *args, **kwargs)
 
+    def get_initial(self):
+        initial = super().get_initial()
+        if self.date is not None:
+            initial['date'] = self.date
+        initial['host'] = self.request.user
+        return initial
+
     def post(self, request, *args, **kwargs):
         if request.POST.get('cancel') is not None:
             if self.previous:
@@ -82,12 +93,10 @@ class CreateEventView(LoginRequiredMixin, AjaxableViewMixin,
                 return redirect('calendar:index')
         return super().post(request, *args, **kwargs)
 
-    def get_initial(self):
-        initial = super().get_initial()
-        if self.date is not None:
-            initial['date'] = self.date
-        initial['host'] = self.request.user
-        return initial
+    def all_valid(self, form, **kwargs):
+        form.instance.added_by = self.request.user
+        form.instance.added = now()
+        return super().all_valid(form, **kwargs)
 
 class EventDetailView(LoginRequiredMixin, AjaxableViewMixin, DetailView):
     model = Event
