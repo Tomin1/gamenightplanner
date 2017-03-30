@@ -15,21 +15,13 @@
 # License along with Game Night Planner.  If not, see
 # <http://www.gnu.org/licenses/>.
 
+from . import AddedInfoModelMixin
 from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from isoweek import Week
-
-class AddedInfoModelMixin(models.Model):
-    class Meta:
-        abstract = True
-
-    added = models.DateTimeField(default=now, verbose_name=_("added"))
-
-    added_by = models.ForeignKey(User, related_name='+',
-                                 verbose_name=_("added by"))
 
 class Event(AddedInfoModelMixin, models.Model):
     class Meta:

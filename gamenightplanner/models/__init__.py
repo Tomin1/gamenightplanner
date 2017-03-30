@@ -15,12 +15,18 @@
 # License along with Game Night Planner.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-from django.contrib import admin
-from .models import *
+from django.contrib.auth.models import User
+from django.db import models
+from django.utils.timezone import now
+from django.utils.translation import ugettext_lazy as _
 
-class GameInline(admin.TabularInline):
-    model = events.Game
+__all__ = ['events', 'AddedInfoModelMixin']
 
-@admin.register(events.Event)
-class EventAdmin(admin.ModelAdmin):
-    inlines = [GameInline]
+class AddedInfoModelMixin(models.Model):
+    class Meta:
+        abstract = True
+
+    added = models.DateTimeField(default=now, verbose_name=_("added"))
+
+    added_by = models.ForeignKey(User, related_name='+',
+                                 verbose_name=_("added by"))

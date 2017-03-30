@@ -27,11 +27,11 @@ from django.utils.translation import ugettext as _
 from django.views.generic import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from isoweek import Week
-from ..models import Event, Game
+from ..models import *
 
 class CreateEventForm(ModelForm):
     class Meta:
-        model = Event
+        model = events.Event
         fields = ['date', 'length', 'host']
 
     def clean_date(self):
@@ -40,7 +40,7 @@ class CreateEventForm(ModelForm):
             raise ValidationError(_("date can not be in the past"))
         return date
 
-GameInlineFormSet = inlineformset_factory(Event, Game, extra=1,
+GameInlineFormSet = inlineformset_factory(events.Event, events.Game, extra=1,
                                           fields=('name',))
 
 class CreateEventView(LoginRequiredMixin, AjaxableViewMixin,
@@ -99,7 +99,7 @@ class CreateEventView(LoginRequiredMixin, AjaxableViewMixin,
         return super().all_valid(form, **kwargs)
 
 class EventDetailView(LoginRequiredMixin, AjaxableViewMixin, DetailView):
-    model = Event
+    model = events.Event
     template_name = 'gamenightplanner/event/event.html'
 
     def get_context_data(self, **kwargs):
@@ -111,7 +111,7 @@ class EventDetailView(LoginRequiredMixin, AjaxableViewMixin, DetailView):
     @staticmethod
     @login_required
     def add_participation_view(request, pk):
-        event = get_object_or_404(Event, pk=pk)
+        event = get_object_or_404(events.Event, pk=pk)
         if event.archived:
             raise PermissionDenied
         event.participants.add(request.user)
@@ -120,7 +120,7 @@ class EventDetailView(LoginRequiredMixin, AjaxableViewMixin, DetailView):
     @staticmethod
     @login_required
     def remove_participation_view(request, pk):
-        event = get_object_or_404(Event, pk=pk)
+        event = get_object_or_404(events.Event, pk=pk)
         if event.archived:
             raise PermissionDenied
         event.participants.remove(request.user)

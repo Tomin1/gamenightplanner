@@ -25,7 +25,7 @@ from django.utils.translation import ugettext as _
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 from isoweek import Week
-from ..models import Event
+from ..models import *
 
 class CalendarMixin(LoginRequiredMixin):
     DAYSOFWEEK = (_('Monday'), _('Tuesday'), _('Wednesday'),
@@ -61,7 +61,7 @@ class CalendarMixin(LoginRequiredMixin):
         raise TypeError("Expected 1 or 3 arguments")
 
 class CalendarView(AjaxableViewMixin, CalendarMixin, ListView):
-    model = Event
+    model = events.Event
 
     template_name = 'gamenightplanner/calendar/month.html'
 
@@ -109,7 +109,7 @@ class CalendarView(AjaxableViewMixin, CalendarMixin, ListView):
         return context
 
 class WeekView(AjaxableViewMixin, CalendarMixin, ListView):
-    model = Event
+    model = events.Event
     context_object_name = 'events'
 
     template_name = 'gamenightplanner/calendar/week.html'
@@ -135,7 +135,7 @@ class WeekView(AjaxableViewMixin, CalendarMixin, ListView):
         return context
 
 class DayView(AjaxableViewMixin, CalendarMixin, ListView):
-    model = Event
+    model = events.Event
     context_object_name = 'events'
 
     template_name = 'gamenightplanner/calendar/day.html'
