@@ -18,6 +18,15 @@ License along with Game Night Planner.  If not, see
 {% endcomment %}<div class="event add_view">
     <form method="post">{% csrf_token %}
         <ul>{{ form.as_ul }}</ul>
+        <div class="games">Games
+            {{ game_formset.management_form }}
+            <table class="games">
+                <tr>{% for field in game_formset.empty_form %}
+                    <th>{% if not field.is_hidden %}{{ field.label }}{% endif %}</th>{% endfor %}
+                </tr>{% for form in game_formset %}
+                <tr>{% for field in form %}<td>{{ field }}</td>{% endfor %}</tr>{% endfor %}
+            </table>
+        </div>
         <input type="submit" value="{% trans "Save" %}" name="save" />
         <input type="submit" value="{% trans "Cancel" %}" name="cancel" formnovalidate />
     </form>

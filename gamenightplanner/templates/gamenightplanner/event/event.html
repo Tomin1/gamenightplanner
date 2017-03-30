@@ -18,6 +18,7 @@ License along with Game Night Planner.  If not, see
 {% endcomment %}<h1>{% blocktrans with date=event.date %}Event on {{ date }}.{% endblocktrans %}</h1>
 <p class="ends_at">{% blocktrans with ends=event.ends %}Event ends at {{ ends }}.{% endblocktrans %}</p>
 <p class="hosted_by">{% blocktrans with host=event.host %}Hosted by {{ host }}.{% endblocktrans %}</p>
+<p class="games_list">{% blocktrans with games=event.games.all|join:", " %}Playing {{ games }}.{% endblocktrans %}</p>
 {% if event.participants.all %}<p>{% trans "Participants:" %}</p>
 <ul class="participants">{% for participant in event.participants.all %}
     <li>{{ participant }}</li>{% endfor %}
