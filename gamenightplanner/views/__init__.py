@@ -19,7 +19,7 @@ from django.utils.timezone import now
 from django.views.generic.base import TemplateResponseMixin, TemplateView
 from django.views.generic.edit import CreateView
 
-__all__ = ['calendar', 'events', 'MainView', 'LoginOptionsView']
+__all__ = ['account', 'calendar', 'events', 'MainView']
 
 class AjaxableViewMixin(TemplateResponseMixin):
     non_ajax_template_name = 'gamenightplanner/non-ajax.html'
@@ -88,6 +88,3 @@ class CreateViewWithInlines(CreateView):
 
 class MainView(TemplateView):
     template_name = 'gamenightplanner/main.html'
-
-class LoginOptionsView(AjaxableViewMixin, TemplateView):
-    template_name = 'gamenightplanner/login.html'
