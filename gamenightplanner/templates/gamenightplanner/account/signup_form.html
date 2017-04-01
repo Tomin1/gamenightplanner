@@ -1,4 +1,4 @@
-{% extends 'gamenightplanner/base.html' %}{% load i18n %}{% comment %}
+{% load i18n %}{% comment %}
 Copyright (c) 2017, Tomi Leppänen
 This file is part of Game Night Planner
 
@@ -15,7 +15,12 @@ GNU General Public License for more details.
 You should have received a copy of the Lesser GNU General Public
 License along with Game Night Planner.  If not, see
 <http://www.gnu.org/licenses/>.
-{% endcomment %}
-{% block content %}
-<p><a data-action="replace" data-target="main_content" href="{% url 'calendar:index' %}">Calendar</a></p>
-{% endblock %}
+{% endcomment %}<div class="signup_form_view">
+    <h1>{% trans "Fill your information to complete sign up" %}</h1>
+    <form method="post">{% csrf_token %}
+        <table>
+            {{ form }}
+        </table>
+        <input type="submit" value="{% trans "Send" %}" />
+    </form>
+</div>

@@ -1,4 +1,4 @@
-<!doctype html>{% load static %}{% comment %}
+<!doctype html>{% load static %}{% load i18n %}{% comment %}
 Copyright (c) 2017, Tomi Leppänen
 This file is part of Game Night Planner
 
@@ -24,6 +24,17 @@ License along with Game Night Planner.  If not, see
     </head>
     <body>
         <h1>Game Night Planner</h1>
+        <p>{% if not user.is_authenticated %}
+            <a href="{% url 'account:login' %}">{% trans "Login" %}</a>{% else %}
+            {% blocktrans with user=user %}Logged in as {{ user }}.{% endblocktrans %} <a href="{% url 'account:logout' %}">{% trans "Logout" %}</a>{% endif %}
+        </p>
+        {% if messages %}<div id="messages">
+            <ul class="messages">
+                {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        </div>{% endif %}
         <div id="main_content">{% block content %}{% endblock %}</div>
     </body>
 </html>
