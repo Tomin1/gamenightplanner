@@ -50,7 +50,14 @@ urlpatterns = [
             events.EventDetailView.remove_participation_view, name='leave'),
     ], namespace='events')),
     url(r'^admin/', admin.site.urls),
-    url(r'^login/$', LoginOptionsView.as_view(), name='login'),
-    url(r'^logout/$', logout, name='logout'),
+    url(r'^account/', include([
+        url(r'^login/$', account.LoginOptionsView.as_view(), name='login'),
+        url(r'^logout/$', logout, name='logout'),
+        url(r'^signup/$', account.SignupView.as_view(), name='signup'),
+        url(r'^signup/(?P<token>\w+)/$', account.SignupFormView.as_view(),
+            name='signup-form'),
+    ], namespace='account')),
     url(r'^auth/', include('social_django.urls', namespace='social')),
+    url(r'^invitations/', include('invitations.urls',
+        namespace='invitations')),
 ]
