@@ -19,3 +19,18 @@
 django-invitations"""
 
 default_app_config = 'gamenightplanner.apps.GameNightPlannerConfig'
+
+VERSION_MAJOR = 0
+VERSION_MINOR = 1
+VERSION_PATCH = ''
+
+def get_version(numeric=False):
+    if numeric:
+        return (VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH)
+    if isinstance(VERSION_PATCH, str) and VERSION_PATCH != '':
+        return "{}.{}-{}".format(VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH)
+    elif isinstance(VERSION_PATCH, int):
+        return "{}.{}.{}".format(VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH)
+    return "{}.{}".format(VERSION_MAJOR, VERSION_MINOR)
+
+__VERSION__ = get_version()
