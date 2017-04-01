@@ -12,31 +12,26 @@ Roadmap
 -------
 This is very much subject to change.
 
-### Version 0.1
- - Can add, create and participate to events
- - Calendar view for month
- - Simple listing views for day and week
- - Login with OpenID and registration with invites
-
 ### Version 0.2
  - Can edit and delete events
- - Day and week views
+ - Proper day and week views
  - More polished month and event views
- - First version of the layout
+ - Support for more login options
 
 ### Version 0.3
  - Ajax field for games
- - More responsive design
+ - First version of the layout
  - Users can send others invitations to events
  - More polished day and week views
 
 ### Version 0.4
  - Ajax views
+ - More responsive design
  - More polished look overall
  - Translations
- - Tests
 
 ### Version 0.5
+ - Tests
  - To be done
 
 Licensing
