@@ -51,7 +51,6 @@ def check_verified_email(strategy, is_signup, **kwargs):
 def signup(backend, strategy, is_signup=False, is_new=False, **kwargs):
     if is_signup:  # Signup
         if is_new:
-            print("signup", 1)
             try:  # Check if already signed up or not
                 user = User.objects.get(
                         email=kwargs.get('account_verified_email'))
@@ -62,16 +61,13 @@ def signup(backend, strategy, is_signup=False, is_new=False, **kwargs):
                 strategy.session_pop('account_verified_email', None)
                 return {'user': user}
         else:  # User existed
-            print("signup", 2)
             msg = _("This {} account is already registered.".format(
                     backend.name))
             raise AuthAlreadyAssociated(backend, msg)
     else:  # Login
         if is_new:  # User does not exist
-            print("signup", 3)
             raise AuthForbidden(backend)
         else:  # All is good, continue
-            print("signup", 4)
             return None
 
 def send_user_signed_up(request, user):
