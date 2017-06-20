@@ -27,6 +27,8 @@ License along with Game Night Planner.  If not, see
 <p>{% if not participating %}<a href="{% url 'events:participate' event.pk %}"><button>{% trans "Participate" %}</button></a>{% else %}
 <a href="{% url 'events:leave' event.pk %}"><button>{% trans "Remove me" %}</button></a>{% endif %}</p>
 {% endif %}
+<p>{% if can_edit %}<a href="{% url 'events:edit' event.pk %}">Edit event</a><br />{% endif %}
+{% if can_delete %}<a href="{% url 'events:delete' event.pk %}">Delete event</a>{% endif %}</p>
 {% if not ajax %}<p>{% with date=event.date week=event.week %}
 <a href="{% url 'calendar:day' date.year date.month date.day %}">{% trans "Go back to day view" %}</a><br />
 <a href="{% url 'calendar:week' date.year week %}">{% trans "Go back to week view" %}</a><br />
