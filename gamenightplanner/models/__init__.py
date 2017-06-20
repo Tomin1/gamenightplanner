@@ -22,6 +22,7 @@ from django.utils.translation import ugettext_lazy as _
 
 __all__ = ['events', 'AddedInfoModelMixin']
 
+
 class AddedInfoModelMixin(models.Model):
     class Meta:
         abstract = True

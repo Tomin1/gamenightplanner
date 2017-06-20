@@ -16,10 +16,12 @@
 # <http://www.gnu.org/licenses/>.
 
 from django.contrib import admin
-from .models import *
+from .models import events
+
 
 class GameInline(admin.TabularInline):
     model = events.Game
+
 
 @admin.register(events.Event)
 class EventAdmin(admin.ModelAdmin):

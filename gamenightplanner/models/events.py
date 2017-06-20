@@ -23,6 +23,7 @@ from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from isoweek import Week
 
+
 class Event(AddedInfoModelMixin, models.Model):
     class Meta:
         verbose_name = _("event")
@@ -57,6 +58,7 @@ class Event(AddedInfoModelMixin, models.Model):
     @property
     def week(self):
         return Week.withdate(self.date).week
+
 
 class Game(models.Model):
     class Meta:

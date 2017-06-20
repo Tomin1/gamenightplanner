@@ -15,7 +15,8 @@
 # License along with Game Night Planner.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-from . import AjaxableViewMixin, CreateWithAddedInfoMixin, CreateViewWithInlines
+from . import (AjaxableViewMixin, CreateWithAddedInfoMixin,
+               CreateViewWithInlines)
 from datetime import datetime, time
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -27,7 +28,8 @@ from django.utils.translation import ugettext as _
 from django.views.generic import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from isoweek import Week
-from ..models import *
+from ..models import events
+
 
 class CreateEventForm(ModelForm):
     class Meta:
@@ -42,6 +44,7 @@ class CreateEventForm(ModelForm):
 
 GameInlineFormSet = inlineformset_factory(events.Event, events.Game, extra=1,
                                           fields=('name',))
+
 
 class CreateEventView(LoginRequiredMixin, AjaxableViewMixin,
                       CreateWithAddedInfoMixin, CreateViewWithInlines):
@@ -64,18 +67,18 @@ class CreateEventView(LoginRequiredMixin, AjaxableViewMixin,
                         self.date = datetime(year, month, day, hour, minute)
                     else:
                         self.date = datetime(year, month, day, 18, 0)
-                    self.previous = ('calendar:day', { 'year': year,
-                                                       'month': month,
-                                                       'day': day })
+                    self.previous = ('calendar:day', {'year': year,
+                                                      'month': month,
+                                                      'day': day})
                 else:
                     self.date = datetime(year, month, 1, 18, 0)
-                    self.previous = ('calendar:month', { 'year': year,
-                                                         'month': month })
+                    self.previous = ('calendar:month', {'year': year,
+                                                        'month': month})
             elif week is not None:
                 self.date = datetime.combine(Week(year, int(week)).monday(),
                                              time(18, 0))
-                self.previous = ('calendar:week', { 'year': year,
-                                                    'week': week })
+                self.previous = ('calendar:week', {'year': year,
+                                                   'week': week})
         return super().dispatch(request, *args, **kwargs)
 
     def get_initial(self):
@@ -97,6 +100,7 @@ class CreateEventView(LoginRequiredMixin, AjaxableViewMixin,
         form.instance.added_by = self.request.user
         form.instance.added = now()
         return super().all_valid(form, **kwargs)
+
 
 class EventDetailView(LoginRequiredMixin, AjaxableViewMixin, DetailView):
     model = events.Event

@@ -21,6 +21,7 @@ from django.views.generic.edit import CreateView
 
 __all__ = ['account', 'calendar', 'events', 'MainView']
 
+
 class AjaxableViewMixin(TemplateResponseMixin):
     non_ajax_template_name = 'gamenightplanner/non-ajax.html'
 
@@ -36,11 +37,13 @@ class AjaxableViewMixin(TemplateResponseMixin):
         context['template'] = self.template_name
         return context
 
+
 class CreateWithAddedInfoMixin(CreateView):
     def form_valid(self, form):
         form.instance.added_by = self.request.user
         form.instance.added = now()
         return super().form_valid(form)
+
 
 class CreateViewWithInlines(CreateView):
     inlines = {}
@@ -85,6 +88,7 @@ class CreateViewWithInlines(CreateView):
             return self.all_invalid(form, **formsets)
         else:
             return self.all_valid(form, **formsets)
+
 
 class MainView(TemplateView):
     template_name = 'gamenightplanner/main.html'

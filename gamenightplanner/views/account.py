@@ -20,13 +20,15 @@ from ..account import send_user_signed_up
 from django.contrib.auth.models import User
 from django.forms import ModelForm, ValidationError, EmailField
 from django.urls import reverse
-from django.utils.timezone import now
+from django.utils.translation import ugettext as _
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView
 from social_django.utils import load_strategy
 
+
 class SignupView(AjaxableViewMixin, TemplateView):
     template_name = 'gamenightplanner/account/signup.html'
+
 
 class SignupForm(ModelForm):
     class Meta:
@@ -43,6 +45,7 @@ class SignupForm(ModelForm):
         if email != self.initial['email']:
             raise ValidationError(_("Email must not be changed"))
         return email
+
 
 class SignupFormView(AjaxableViewMixin, CreateView):
     template_name = 'gamenightplanner/account/signup_form.html'
@@ -64,6 +67,7 @@ class SignupFormView(AjaxableViewMixin, CreateView):
         response = super().form_valid(form)
         send_user_signed_up(self.request, self.object)
         return response
+
 
 class LoginOptionsView(AjaxableViewMixin, TemplateView):
     template_name = 'gamenightplanner/account/login.html'

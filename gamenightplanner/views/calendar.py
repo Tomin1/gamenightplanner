@@ -25,7 +25,8 @@ from django.utils.translation import ugettext as _
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 from isoweek import Week
-from ..models import *
+from ..models import events
+
 
 class CalendarMixin(LoginRequiredMixin):
     DAYSOFWEEK = (_('Monday'), _('Tuesday'), _('Wednesday'),
@@ -59,6 +60,7 @@ class CalendarMixin(LoginRequiredMixin):
             year, month, day = args
             return reverse('calendar:day', args=(year, month, day))
         raise TypeError("Expected 1 or 3 arguments")
+
 
 class CalendarView(AjaxableViewMixin, CalendarMixin, ListView):
     model = events.Event
@@ -108,6 +110,7 @@ class CalendarView(AjaxableViewMixin, CalendarMixin, ListView):
         context['calendar'] = self.calendar_iter()
         return context
 
+
 class WeekView(AjaxableViewMixin, CalendarMixin, ListView):
     model = events.Event
     context_object_name = 'events'
@@ -133,6 +136,7 @@ class WeekView(AjaxableViewMixin, CalendarMixin, ListView):
         context['next_url'] = self.week_link(self.week+1)
         context['prev_url'] = self.week_link(self.week-1)
         return context
+
 
 class DayView(AjaxableViewMixin, CalendarMixin, ListView):
     model = events.Event
@@ -162,4 +166,3 @@ class DayView(AjaxableViewMixin, CalendarMixin, ListView):
         context['prev_url'] = self.day_link(self.date.year, self.date.month,
                                             self.date.day-1)
         return context
-

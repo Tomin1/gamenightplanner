@@ -35,7 +35,7 @@ urlpatterns = [
     url(r'^event/', include([
         url(r'^(?P<pk>\d+)/$', events.EventDetailView.as_view(), name='show'),
         url(r'^add/$', events.CreateEventView.as_view(), name='add'),
-        url(r'^add/(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)/(?P<hour>\d+)/'+
+        url(r'^add/(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)/(?P<hour>\d+)/' +
             r'(?P<minute>\d+)/$', events.CreateEventView.as_view(),
             name='add'),
         url(r'^add/(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)/$',

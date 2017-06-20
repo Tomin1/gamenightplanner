@@ -16,7 +16,6 @@
 # <http://www.gnu.org/licenses/>.
 
 from invitations.adapters import BaseInvitationsAdapter
-from django.contrib import messages
 from django.contrib.auth.models import User
 from django.dispatch import Signal
 from django.urls import reverse
@@ -26,9 +25,11 @@ from social_core.pipeline.partial import partial
 
 user_signed_up = Signal(providing_args=["request", "user"])
 
+
 class InvitationAdapter(BaseInvitationsAdapter):
     def get_user_signed_up_signal(self):
         return user_signed_up
+
 
 def is_signup(strategy, request, user=None, **kwargs):
     # FIXME: Is there a better way to detect this?
@@ -37,7 +38,8 @@ def is_signup(strategy, request, user=None, **kwargs):
         return {'is_signup': True}
     return {'is_signup': False}
 
-def check_verified_email(strategy, is_signup, **kwargs):
+
+def check_verified_email(strategy, is_signup, backend, **kwargs):
     if is_signup:
         account_verified_email = strategy.session_get('account_verified_email',
                                                       None)
@@ -47,6 +49,7 @@ def check_verified_email(strategy, is_signup, **kwargs):
         else:
             return {'account_verified_email': account_verified_email}
 
+
 @partial
 def signup(backend, strategy, is_signup=False, is_new=False, **kwargs):
     if is_signup:  # Signup
@@ -55,8 +58,9 @@ def signup(backend, strategy, is_signup=False, is_new=False, **kwargs):
                 user = User.objects.get(
                         email=kwargs.get('account_verified_email'))
             except User.DoesNotExist:
-                return strategy.redirect(reverse('account:signup-form',
-                        args=(kwargs.get('current_partial').token,)))
+                return strategy.redirect(reverse(
+                    'account:signup-form',
+                    args=(kwargs.get('current_partial').token,)))
             else:
                 strategy.session_pop('account_verified_email', None)
                 return {'user': user}
@@ -69,6 +73,7 @@ def signup(backend, strategy, is_signup=False, is_new=False, **kwargs):
             raise AuthForbidden(backend)
         else:  # All is good, continue
             return None
+
 
 def send_user_signed_up(request, user):
     user_signed_up.send(user.__class__, request=request, user=user)
