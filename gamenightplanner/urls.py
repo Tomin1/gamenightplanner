@@ -48,6 +48,10 @@ urlpatterns = [
             events.EventDetailView.add_participation_view, name='participate'),
         url(r'^leave/(?P<pk>\d+)/$',
             events.EventDetailView.remove_participation_view, name='leave'),
+        url(r'^edit/(?P<pk>\d+)/$', events.EventUpdateView.as_view(),
+            name='edit'),
+        url(r'^delete/(?P<pk>\d+)/$', events.EventDeleteView.as_view(),
+            name='delete'),
     ], namespace='events')),
     url(r'^admin/', admin.site.urls),
     url(r'^account/', include([
