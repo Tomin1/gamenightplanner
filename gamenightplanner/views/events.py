@@ -23,10 +23,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.forms import ModelForm, ValidationError, inlineformset_factory
 from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse
 from django.utils.timezone import now
 from django.utils.translation import ugettext as _
 from django.views.generic import DetailView
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic.edit import UpdateView, DeleteView
 from isoweek import Week
 from ..models import events
 
@@ -108,6 +109,9 @@ class EventDetailView(LoginRequiredMixin, AjaxableViewMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        obj = self.get_object()
+        context['can_edit'] = obj.has_change_permission(self.request, obj)
+        context['can_delete'] = obj.has_delete_permission(self.request, obj)
         context['participating'] = self.get_object().participants.filter(
                 pk=self.request.user.pk).exists()
         return context
@@ -129,3 +133,30 @@ class EventDetailView(LoginRequiredMixin, AjaxableViewMixin, DetailView):
             raise PermissionDenied
         event.participants.remove(request.user)
         return redirect('events:show', pk=pk)
+
+
+class EventUpdateView(LoginRequiredMixin, AjaxableViewMixin, UpdateView):
+    model = events.Event
+    template_name = 'gamenightplanner/event/edit.html'
+    fields = ('date', 'length', 'host')
+
+    def post(self, request, *args, **kwargs):
+        if request.POST.get('cancel') is not None:
+            return redirect('events:show', kwargs.pop('pk'))
+        return super().post(request, *args, **kwargs)
+
+
+class EventDeleteView(LoginRequiredMixin, AjaxableViewMixin, DeleteView):
+    model = events.Event
+    template_name = 'gamenightplanner/event/delete.html'
+
+    def post(self, request, *args, **kwargs):
+        if request.POST.get('cancel') is not None:
+            return redirect('events:show', kwargs.pop('pk'))
+        self.date = self.get_object().date
+        return super().post(request, *args, **kwargs)
+
+    def get_success_url(self):
+        return reverse('calendar:day', kwargs={'year': self.date.year,
+                                               'month': self.date.month,
+                                               'day': self.date.day})
