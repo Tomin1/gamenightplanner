@@ -59,6 +59,23 @@ class Event(AddedInfoModelMixin, models.Model):
     def week(self):
         return Week.withdate(self.date).week
 
+    def has_add_permission(self, request):
+        if request.user.is_authenticated:
+            return True
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        if obj is None and request.user.is_authenticated:
+            return True
+        if obj.archived:
+            return False
+        if obj.added_by == request.user or obj.host == request.user:
+            return True
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return self.has_change_permission(request, obj)
+
 
 class Game(models.Model):
     class Meta:
